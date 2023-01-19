@@ -1,0 +1,14 @@
+[PATH_SETTING]
+EXCEPT_PATH_LIST = ['/', '/openapi.json', '/user/register']
+EXCEPT_PATH_REGEX = "^(/docs|/redoc|/api/auth)"
+
+[SECURITY_SETTING]
+JWT_SECRET = "JAYYONG_TOBS1A71BC234"
+JWT_ALGORITHM = "HS256"
+
+[DATABASE_SETTING]
+host='localhost'
+user='jay'
+password='1111'
+port=3306
+dbname='wings'
