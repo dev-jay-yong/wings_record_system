@@ -11,8 +11,7 @@ from jwt.exceptions import ExpiredSignatureError, DecodeError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-# from app.database.conn import db
-# from app.database.schema import Users, ApiKeys
+from app.models.user_model import UserHelper
 from app.errors import exceptions as ex
 from app.errors.exceptions import APIException
 from app.utils.logger import api_logger
@@ -31,36 +30,34 @@ async def access_control(request: Request, call_next):
     request.state.inspect = None
     request.state.user = None
     request.state.service = None
+    user_helper = UserHelper()
 
     ip = request.headers["x-forwarded-for"] if "x-forwarded-for" in request.headers.keys() else request.client.host
     request.state.ip = ip.split(",")[0] if "," in ip else ip
     headers = request.headers
     cookies = request.cookies
 
-    # url = request.url.path
-    # if await url_pattern_check(url, path_setting['EXCEPT_PATH_REGEX']) or url in path_setting['EXCEPT_PATH_LIST']:
-    #     response = await call_next(request)
-    #     if url != "/":
-    #         await api_logger(request=request, response=response)
-    #     return response
+    url = request.url.path
 
     try:
-        qs = str(request.query_params)
-        qs_list = qs.split("&")
-        # session = next(db.session())
-        # try:
-        #     qs_dict = {qs_split.split("=")[0]: qs_split.split("=")[1] for qs_split in qs_list}
-        # except Exception:
-        #     raise ex.APIQueryStringEx()
+        if await url_pattern_check(url, path_setting['EXCEPT_PATH_REGEX']) or url in path_setting['EXCEPT_PATH_LIST']:
+            response = await call_next(request)
+            if url != "/":
+                await api_logger(request=request, response=response)
+            return response
 
-        # api_key = ApiKeys.get(session=session, access_key=qs_dict["key"])
+        if headers.get("Authorization") is None:
+            raise ex.NotAuthenticatedException()
 
-        # now_timestamp = int(DateTimeHandler.datetime(diff=9).timestamp())
-        # if now_timestamp - 10 > int(qs_dict["timestamp"]) or now_timestamp < int(qs_dict["timestamp"]):
-        #     raise ex.APITimestampEx()
+        token_info = await token_decode(access_token=headers.get("Authorization"))
+        request.state.user = user_helper.get_one_user_by_id(token_info['user_id'], is_dict=False)
 
-        user_info = "user_data"
-        request.state.user = user_info
+        if request.state.user is None:
+            raise ex.TokenDecodeEx()
+
+        if request.state.user.confirm is False:
+            raise ex.NotConfirmedUserException()
+
         response = await call_next(request)
         await api_logger(request=request, response=response)
     except Exception as e:

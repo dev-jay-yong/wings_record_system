@@ -9,6 +9,26 @@ class APIException(Exception):
         self.ex = ex
 
 
+class TokenExpiredEx(APIException):
+    def __init__(self, ex: Exception = None):
+        super().__init__(
+            status_code=status.HTTP_400,
+            message=f"세션이 만료되어 로그아웃 되었습니다.",
+            detail="Token Expired",
+            ex=ex,
+        )
+
+
+class TokenDecodeEx(APIException):
+    def __init__(self, ex: Exception = None):
+        super().__init__(
+            status_code=status.HTTP_400,
+            message=f"비정상적인 접근입니다.",
+            detail="Token has been compromised.",
+            ex=ex,
+        )
+
+
 class NotAuthenticatedException(APIException):
     def __init__(self) -> None:
         super().__init__(
@@ -46,6 +66,15 @@ class DifferentPasswordException(APIException):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
             message="비밀번호가 서로 다릅니다. 다시 확인해주세요."
+        )
+
+
+class InvalidPositionException(APIException):
+    def __init__(self, position_name: str = None) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            message="포지션 정보가 잘못 되었습니다. 다시 확인해주세요.",
+            detail=f"입력 가능한 포지션 - ['아웃사이드 히터', '아포짓 스파이커', '미들 블로커', '세터', '리베로'] | 입력한 포지션 : {position_name}"
         )
 
 

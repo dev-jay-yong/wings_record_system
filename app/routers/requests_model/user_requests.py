@@ -5,11 +5,11 @@ from pydantic import BaseModel
 
 
 class RegisterRequestModel(BaseModel):
-    user_id: str
+    identifier: str
     password: str
     password_check: str
     name: str
-    birth_day: datetime.date
+    birth: datetime.date
     age: int
     number: int = -1
     position: str = None

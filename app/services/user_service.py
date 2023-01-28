@@ -34,7 +34,7 @@ class User:
 
     def register_user(self, register_data):
         # todo: 조회할 때 로우 존재 여부만 count로 조회 하도록 변경
-        exist_user = self.user_helper.get_one_user_by_id(register_data.user_id)
+        exist_user = self.user_helper.get_one_user_by_id(register_data.identifier)
 
         if exist_user is not None:
             raise ex.DuplicatedUserIdException()
@@ -42,15 +42,21 @@ class User:
         if register_data.password != register_data.password_check:
             raise ex.DifferentPasswordException()
 
+        position_info = self.user_helper.get_position_by_name(register_data.position)
+
+        if position_info is None:
+            raise ex.InvalidPositionException(register_data.position)
+
         register_data.password = bcrypt.hashpw(password=register_data.password.encode('utf-8'), salt=bcrypt.gensalt())
         register_data = register_data.__dict__
 
         with open("app/common/setting.toml", "rb") as f:
             security_setting = tomllib.load(f)['SECURITY_SETTING']
 
-        register_data['token'] = jwt.encode({'user_id': register_data['user_id']},
+        register_data['token'] = jwt.encode({'user_id': register_data['identifier']},
                                             security_setting['JWT_SECRET'],
                                             security_setting['JWT_ALGORITHM'])
+        register_data['position'] = position_info.id
 
         user_data = self.user_helper.create_user(register_data)
         user_data.pop('password')

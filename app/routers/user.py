@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Request, Depends
-from fastapi.security import APIKeyHeader
+from fastapi import APIRouter
+from fastapi.responses import FileResponse
 
-from app.errors import exceptions as ex
 from app.routers.response_model.user_response import *
 from app.routers.requests_model.user_requests import *
 from app.services.user_service import User
@@ -14,16 +13,16 @@ user_class = User()
     path="/register",
     response_model=RegisterResponse,
 )
-async def login_user(request: Request, register_request_model: RegisterRequestModel) -> dict:
+async def register_user(register_request_model: RegisterRequestModel) -> dict:
     """
-    ```user_id```: 회원가입 할 아이디 <br>
+    ```identifier```: 회원가입 할 아이디 <br>
     ```password```: 회원가입 할 비밀번호 <br>
     ```password_check```: 회원가입 할 비밀번호 한 번 더 입력 (확인용) <br>
     ```name```: 본인 실명 <br>
     ```birth_day```: 본인 생일 (%Y-%m-%d 형식) <br>
     ```age```: 본인 나이 <br>
     ```number```: 본인 배구 등 번호 (없는 경우 null) <br>
-    ```position```: 본인 배구 포지션 (아포짓 스파이커, 아웃사이드 히터, 세터, 센터, 리베로 중 택 1) <br>
+    ```position```: 본인 배구 포지션 (아포짓 스파이커, 아웃사이드 히터, 세터, 미들 블로커, 리베로 중 택 1) <br>
     """
 
     result = user_class.register_user(register_request_model)
@@ -34,7 +33,7 @@ async def login_user(request: Request, register_request_model: RegisterRequestMo
     path="/check-duplicate",
     response_model=DuplicateUserIdResponse,
 )
-async def login_user(request: Request, user_id: str) -> dict:
+async def login_user(user_id: str) -> dict:
     """
     ```user_id```: 회원가입 할 아이디 (query param) <br>
 
@@ -50,7 +49,7 @@ async def login_user(request: Request, user_id: str) -> dict:
     path="/login",
     response_model=DuplicateUserIdResponse,
 )
-async def login_user(request: Request, login_request_model: LoginRequestModel) -> dict:
+async def login_user(login_request_model: LoginRequestModel) -> dict:
     """
     ```user_id```: 회원가입 할 아이디 (query param) <br>
 

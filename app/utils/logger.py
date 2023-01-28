@@ -31,11 +31,11 @@ async def api_logger(request: Request, response=None, error=None):
         )
 
     try:
-        email = user.email.split("@") if user and user.email else None
+        user_name = user.identifier if user and user.identifier else None
         user_log = dict(
             client=request.state.ip,
             user=user.id if user and user.id else None,
-            email="**" + email[0][2:-1] + "*@" + email[1] if user and user.email else None,
+            email=f'{user_name[0]}*{user_name[-1]}' if user_name else None,
         )
     except:
         user_log = "test"
@@ -54,4 +54,5 @@ async def api_logger(request: Request, response=None, error=None):
     if error and error.status_code >= 500:
         logger.error(json.dumps(log_dict))
     else:
+        print(json.dumps(log_dict))
         logger.info(json.dumps(log_dict))
