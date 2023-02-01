@@ -45,20 +45,32 @@ class Team:
 
         return teams
 
+    def get_team_coach_info(self, team_id) -> dict:
+        coach_data = self.team_helper.get_coach_info_by_team_id(team_id)
+
+        if coach_data is None:
+            raise ex.NotExistCoachException
+
+        profile_image = self.team_helper.get_one_team_users_by_team_id(coach_data.id, team_id).profile_image
+
+        coach_position = model_to_dict(coach_data.position)
+        coach_data = coach_data.__dict__['__data__']
+        coach_data.update(coach_position)
+        coach_data.pop('position')
+        coach_data.pop('id')
+        coach_data['profile_image'] = profile_image
+
+        return coach_data
+
     def get_team_introduction(self, team_id) -> dict:
         team_info = self.team_helper.get_one_team_by_id(team_id, is_dict=True)
         team_performance = [model_to_dict(x) for x in self.team_helper.get_team_performances_by_team_id(team_id)]
         team_info['performance'] = team_performance
 
         coach_data = self.team_helper.get_coach_info_by_team_id(team_id)
-        if coach_data:
-            coach_position = model_to_dict(coach_data.position)
-            coach_data = coach_data.__dict__['__data__']
-            coach_data.update(coach_position)
-            coach_data.pop('position')
-            coach_data.pop('id')
-
-        team_info['coach'] = coach_data
+        team_info['price'] = {'seoul_league': 0, 'national_convention': 0}
+        team_info['info'] = self.team_helper.get_team_profile(team_id)
+        team_info['coach'] = coach_data.name if coach_data else "공석"
 
         return team_info
 
@@ -77,6 +89,11 @@ class Team:
 
     def team_player_info(self, player_id, team_id):
         detail_record = self.detail_record_structure
+        user_info = self.team_helper.get_one_team_users_by_team_id(player_id, team_id)
+
+        if user_info:
+            user_info = user_info.__dict__['__data__']
+
         player_record = {'score_rank': TeamHelper().get_active_name_rank_by_user_id(player_id,
                                                                                     ["attack_success", "block_success",
                                                                                      "serve_success"]),
@@ -109,8 +126,8 @@ class Team:
 
         data = {"prize": prize, "triple_crown": triple_crown, "reference_record": reference_record}
 
-        return {"detail_record": detail_record, "player_record": player_record, "photo_gallery_urls": photo_gallery,
-                "job": data}
+        return {"user": user_info, "detail_record": detail_record, "player_record": player_record,
+                "photo_gallery_urls": photo_gallery, "job": data}
 
     def get_record_possession(self, data, record_name, team_id):
         team_record_count = self.team_helper.get_team_record_count(team_id, record_name)

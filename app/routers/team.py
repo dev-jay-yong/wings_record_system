@@ -1,11 +1,9 @@
 from enum import Enum
 
-from fastapi import APIRouter, Request, Query
+from fastapi import APIRouter
 
-from app.errors import exceptions as ex
 from app.routers.response_model.team_response import *
 from app.services.team_service import Team
-from typing import Union, List
 
 router = APIRouter(prefix="/team", tags=["team"])
 
@@ -33,6 +31,18 @@ async def get_team_introduction(team_id: int) -> dict:
     ```team_id```: 팀 아이디 (int) - query param
     """
     result = Team().get_team_introduction(team_id)
+    return {"data": result}
+
+
+@router.get(
+    path="/coach"
+)
+async def get_team_coach(team_id: int) -> dict:
+    """
+    ### 팀 코치 정보 조회 <br><br>
+    ```team_id```: 팀 아이디 (int) - query param
+    """
+    result = Team().get_team_coach_info(team_id)
     return {"data": result}
 
 

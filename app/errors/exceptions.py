@@ -61,6 +61,14 @@ class NotConfirmedUserException(APIException):
         )
 
 
+class NotExistCoachException(APIException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            message="해당 팀에 코치가 존재하지 않습니다."
+        )
+
+
 class DifferentPasswordException(APIException):
     def __init__(self) -> None:
         super().__init__(

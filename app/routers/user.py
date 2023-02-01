@@ -33,7 +33,7 @@ async def register_user(register_request_model: RegisterRequestModel) -> dict:
     path="/check-duplicate",
     response_model=DuplicateUserIdResponse,
 )
-async def login_user(user_id: str) -> dict:
+async def check_duplicate(user_id: str) -> dict:
     """
     ```user_id```: 회원가입 할 아이디 (query param) <br>
 
