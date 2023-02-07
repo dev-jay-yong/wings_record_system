@@ -19,6 +19,7 @@ class Team:
                 "blocking_shut_out": 0
             },
             "serve": {
+                "serve_count": 0,
                 "serve_success": 0,
                 "serve_miss": 0
             },
@@ -49,7 +50,7 @@ class Team:
         coach_data = self.team_helper.get_coach_info_by_team_id(team_id)
 
         if coach_data is None:
-            raise ex.NotExistCoachException
+            raise ex.NotExistCoachException()
 
         profile_image = self.team_helper.get_one_team_users_by_team_id(coach_data.id, team_id).profile_image
 
@@ -64,13 +65,22 @@ class Team:
 
     def get_team_introduction(self, team_id) -> dict:
         team_info = self.team_helper.get_one_team_by_id(team_id, is_dict=True)
+
+        if team_info is None:
+            raise ex.TeamNotFoundException
+
         team_performance = [model_to_dict(x) for x in self.team_helper.get_team_performances_by_team_id(team_id)]
+        score_list = self.team_helper.get_team_win_lose_score(team_id)
+        team_total_record = {
+            "total_win_count": score_list[0].total_win_count, "total_lose_count": score_list[0].total_lose_count
+        } if score_list else {"total_win_count": 0, "total_lose_count": 0}
         team_info['performance'] = team_performance
 
         coach_data = self.team_helper.get_coach_info_by_team_id(team_id)
         team_info['price'] = {'seoul_league': 0, 'national_convention': 0}
         team_info['info'] = self.team_helper.get_team_profile(team_id)
         team_info['coach'] = coach_data.name if coach_data else "공석"
+        team_info['team_total_record'] = team_total_record
 
         return team_info
 
@@ -84,6 +94,32 @@ class Team:
                 "position_name": player.position.position_name,
                 "position_code": player.position.position_code,
             } for player in self.team_helper.get_team_players_by_team_id(team_id)]
+
+        return result
+
+    def team_history(self, team_id, content_id):
+        team_info = self.team_helper.get_one_team_by_id(team_id, is_dict=True)
+
+        if team_info is None:
+            raise ex.TeamNotFoundException
+
+        select_query = (TeamHistoryModel.id, TeamHistoryModel.title)
+        history_list = self.team_helper.get_team_history_by_team_id(team_id, select_query=select_query)
+
+        if not history_list:
+            return {
+            "history_list": [],
+            "history_detail": {}
+            }
+
+        content_id = content_id if content_id else history_list[0].id
+
+        history_detail = self.team_helper.get_one_history_by_id(content_id)
+
+        result = {
+            "history_list": [{"title": x.title, "id": x.id} for x in history_list],
+            "history_detail": history_detail.__dict__['__data__']
+        }
 
         return result
 

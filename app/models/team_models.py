@@ -14,13 +14,34 @@ class TeamHelper:
         self.player_record_table = PlayerRecordModel
         self.match_record_table = MatchRecordModel
         self.team_profile_table = TeamProfileModel
+        self.team_history_table = TeamHistoryModel
 
     def get_teams_by_gender_code(self, gender_code: bool):
         return self.table.select().where(self.table.gender == gender_code).execute()
 
+    def get_team_history_by_team_id(self, team_id: int, select_query: tuple = None):
+        condition = self.team_history_table.team_id == team_id
+        return self.team_history_table.select(*select_query).where(condition).execute()
+
+    def get_one_history_by_id(self, history_id: int):
+        return self.team_history_table.get_or_none(self.team_history_table.id == history_id)
+
     def get_one_team_by_id(self, user_id, is_dict=False):
         result = self.table.get_or_none(self.table.id == user_id)
+
+        if result is None:
+            return result
+
         return model_to_dict(result) if is_dict else result
+
+    def get_team_win_lose_score(self, team_id):
+        select_query = (
+            fn.SUM(self.team_performance_table.win_counts).alias('total_win_count'),
+            fn.SUM(self.team_performance_table.lose_counts).alias('total_lose_count')
+        )
+        result = self.team_performance_table.select(*select_query).where(self.team_performance_table.team_id == team_id).execute()
+
+        return result
 
     def get_team_performances_by_team_id(self, team_id):
         result = self.team_performance_table.select().where(self.team_performance_table.team_id == team_id).execute()
@@ -36,6 +57,7 @@ class TeamHelper:
             self.user_table.profile_image,
             self.user_table.weight,
             self.user_table.height,
+            self.user_table.birth,
             self.position_table.position_name.alias('position_name'),
             self.position_table.position_code.alias('position_code'),
         )
@@ -176,4 +198,4 @@ class TeamHelper:
 
 
 if __name__ == '__main__':
-    print(TeamHelper().get_team_record_count(1, 'attack_success'))
+    print(TeamHelper().get_team_win_lose_score(1))

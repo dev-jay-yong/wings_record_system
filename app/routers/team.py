@@ -89,3 +89,10 @@ async def get_player_info(player_id: int, team_id: int) -> dict:
 
     return {"data": result}
 
+@router.get(
+    path="/history/{team_id}"
+)
+async def get_team_history(team_id: int, content_id: int = None) -> dict:
+    result = Team().team_history(team_id, content_id)
+
+    return {"data": result}
