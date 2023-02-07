@@ -1,6 +1,6 @@
 from playhouse.shortcuts import model_to_dict
-from app.models.base import TeamModel, TeamPerformanceModel, TeamUserModel, UserModel, PositionModel, \
-    PlayerRecordModel, MatchRecordModel, db, TeamProfileModel
+from models.base import TeamModel, TeamPerformanceModel, TeamUserModel, UserModel, PositionModel, \
+    PlayerRecordModel, MatchRecordModel, db, TeamProfileModel, TeamHistoryModel
 from peewee import fn, Select
 
 

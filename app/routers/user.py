@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from app.routers.response_model.user_response import *
-from app.routers.requests_model.user_requests import *
-from app.services.user_service import User
+from routers.response_model.user_response import *
+from routers.requests_model.user_requests import *
+from services.user_service import User
 
 router = APIRouter(prefix="/user", tags=["user"])
 user_class = User()

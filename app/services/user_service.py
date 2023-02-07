@@ -3,8 +3,8 @@ import tomllib
 import jwt
 from playhouse.shortcuts import model_to_dict
 
-from app.models.user_model import UserHelper
-from app.errors import exceptions as ex
+from models.user_model import UserHelper
+from errors import exceptions as ex
 
 import bcrypt
 

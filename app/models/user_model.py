@@ -1,5 +1,5 @@
 from playhouse.shortcuts import model_to_dict
-from app.models.base import UserModel, PhotoModel, ReferenceRecordModel, TripleCrownModel, PrizeModel, PositionModel
+from models.base import UserModel, PhotoModel, ReferenceRecordModel, TripleCrownModel, PrizeModel, PositionModel
 
 
 class UserHelper:

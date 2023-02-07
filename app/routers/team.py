@@ -2,8 +2,8 @@ from enum import Enum
 
 from fastapi import APIRouter
 
-from app.routers.response_model.team_response import *
-from app.services.team_service import Team
+from routers.response_model.team_response import *
+from services.team_service import Team
 
 router = APIRouter(prefix="/team", tags=["team"])
 

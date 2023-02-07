@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.middlewares.access_controller import access_control
-from app.routers import api_router
+from middlewares.access_controller import access_control
+from routers import api_router
 
 
 def create_app() -> FastAPI:
