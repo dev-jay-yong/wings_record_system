@@ -69,6 +69,13 @@ class NotExistCoachException(APIException):
         )
 
 
+class TeamNotFoundException(APIException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            message="조회하려는 팀이 존재하지 않습니다."
+        )
+
 class DifferentPasswordException(APIException):
     def __init__(self) -> None:
         super().__init__(
