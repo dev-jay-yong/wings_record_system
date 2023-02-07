@@ -1,5 +1,5 @@
 from peewee import MySQLDatabase, Model, IntegerField, DateField, CharField, BooleanField, ForeignKeyField, \
-                    DateTimeField, FloatField
+                    DateTimeField, FloatField, TextField
 import tomllib
 
 
@@ -68,6 +68,16 @@ class TeamProfileModel(BaseModel):
     affiliation = CharField(max_length=255)
     chairman = CharField(max_length=20)
     captain = CharField(max_length=20)
+
+
+class TeamHistoryModel(BaseModel):
+    class Meta:
+        db_table = "team_history"
+
+    id = IntegerField(primary_key=True, db_column="id")
+    team_id = IntegerField()
+    title = CharField(max_length=500)
+    content = TextField()
 
 
 """
