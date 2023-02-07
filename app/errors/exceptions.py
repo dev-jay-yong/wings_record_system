@@ -12,7 +12,7 @@ class APIException(Exception):
 class TokenExpiredEx(APIException):
     def __init__(self, ex: Exception = None):
         super().__init__(
-            status_code=status.HTTP_400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             message=f"세션이 만료되어 로그아웃 되었습니다.",
             detail="Token Expired",
             ex=ex,
@@ -22,7 +22,7 @@ class TokenExpiredEx(APIException):
 class TokenDecodeEx(APIException):
     def __init__(self, ex: Exception = None):
         super().__init__(
-            status_code=status.HTTP_400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             message=f"비정상적인 접근입니다.",
             detail="Token has been compromised.",
             ex=ex,
