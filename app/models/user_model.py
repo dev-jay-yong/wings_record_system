@@ -1,6 +1,7 @@
 from playhouse.shortcuts import model_to_dict
-from models.base import UserModel, PhotoModel, ReferenceRecordModel, TripleCrownModel, PrizeModel, PositionModel
+from models.base import db, UserModel, PhotoModel, ReferenceRecordModel, TripleCrownModel, PrizeModel, PositionModel
 
+import functools
 
 class UserHelper:
     def __init__(self):
@@ -10,6 +11,18 @@ class UserHelper:
         self.triple_crown_table = TripleCrownModel
         self.position_table = PositionModel
         self.prize_table = PrizeModel
+
+    def __exit__(self, exc_type, exc_value, traceback):
+
+        if not db.is_closed():
+            db.close()
+
+    def wrapper(func):
+        @functools.wraps(func)
+        def wrap(self, *args, **kwargs):
+            with db.connection_context():
+                return func(self, *args, **kwargs)
+        return wrap
 
     def create_user(self, data):
         return model_to_dict(self.table.create(**data))

@@ -1,6 +1,7 @@
 import base64
 import hmac
 import time
+import traceback
 import typing
 import re
 import tomllib
@@ -11,7 +12,6 @@ from jwt.exceptions import ExpiredSignatureError, DecodeError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from models.base import db
 from models.user_model import UserHelper
 from errors import exceptions as ex
 from errors.exceptions import APIException
@@ -41,7 +41,6 @@ async def access_control(request: Request, call_next):
     url = request.url.path
 
     try:
-        db.connect()
         if await url_pattern_check(url, path_setting['EXCEPT_PATH_REGEX']) or url in path_setting['EXCEPT_PATH_LIST']:
             response = await call_next(request)
             if url != "/":
@@ -63,13 +62,12 @@ async def access_control(request: Request, call_next):
         response = await call_next(request)
         await api_logger(request=request, response=response)
     except Exception as e:
+        print(traceback.format_exception(e))
 
         error = await exception_handler(e)
         error_dict = dict(message=error.message, detail=error.detail, status_code=error.status_code)
         response = JSONResponse(status_code=error.status_code, content=error_dict)
         await api_logger(request=request, error=error)
-    finally:
-        db.close()
 
     return response
 
