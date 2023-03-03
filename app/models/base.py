@@ -1,7 +1,6 @@
 from peewee import MySQLDatabase, Model, IntegerField, DateField, CharField, BooleanField, ForeignKeyField, \
-                    DateTimeField, FloatField, TextField
+    DateTimeField, FloatField, TextField
 import tomllib
-
 
 with open("app/common/setting.toml", "rb") as f:
     setting_dict = tomllib.load(f)['DATABASE_SETTING']
@@ -15,7 +14,6 @@ host = setting_dict['host']
 db = MySQLDatabase(db_name, user=user, password=password, host=host, port=port)
 
 class BaseModel(Model):
-
     class Meta:
         database = db
 
