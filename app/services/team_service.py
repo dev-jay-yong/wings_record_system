@@ -146,7 +146,7 @@ class Team:
             detail_record.update({"set_count": x.set_count, "match_count": x.match_count})
 
         detail_record['attack']['accuracy'] = round(
-            detail_record['attack']['attack_success'] / detail_record['attack']['attack'], 2) * 100 if \
+        detail_record['attack']['attack_success'] / detail_record['attack']['attack'] * 100, 2) if \
         detail_record['attack']['attack'] else 0
 
         detail_record['serve_receive'] = self.get_record_possession(detail_record['serve_receive'], 'receive_success', team_id)
@@ -167,7 +167,7 @@ class Team:
 
     def get_record_possession(self, data, record_name, team_id):
         team_record_count = self.team_helper.get_team_record_count(team_id, record_name)
-        data['possession'] = 0 if team_record_count == 0 else round(data[record_name] / team_record_count, 2) * 100
+        data['possession'] = 0 if team_record_count == 0 else round(data[record_name] / team_record_count * 100, 2)
         return data
 
     def get_team_record(self, team_id, record_type):
