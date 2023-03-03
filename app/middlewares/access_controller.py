@@ -12,6 +12,7 @@ from jwt.exceptions import ExpiredSignatureError, DecodeError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from models.base import db
 from models.user_model import UserHelper
 from errors import exceptions as ex
 from errors.exceptions import APIException
@@ -41,6 +42,7 @@ async def access_control(request: Request, call_next):
     url = request.url.path
 
     try:
+        db.connect(reuse_if_open=True)
         if await url_pattern_check(url, path_setting['EXCEPT_PATH_REGEX']) or url in path_setting['EXCEPT_PATH_LIST']:
             response = await call_next(request)
             if url != "/":
