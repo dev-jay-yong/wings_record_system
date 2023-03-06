@@ -224,6 +224,7 @@ class PlayerRecordModel(BaseModel):
     created_at = DateTimeField()
     user_id = IntegerField()
     team_id = IntegerField()
+    match_id = IntegerField()
 
 
 class MatchRecordModel(BaseModel):
