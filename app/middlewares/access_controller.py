@@ -42,7 +42,10 @@ async def access_control(request: Request, call_next):
     url = request.url.path
 
     try:
-        db.connect(reuse_if_open=True)
+        if not db.is_connection_usable():
+            db.close()
+            db.connect(reuse_if_open=True)
+
         if await url_pattern_check(url, path_setting['EXCEPT_PATH_REGEX']) or url in path_setting['EXCEPT_PATH_LIST']:
             response = await call_next(request)
             if url != "/":
