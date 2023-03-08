@@ -4,3 +4,4 @@ app/common/setting.toml
 *.pyc
 app/.next
 app/package.json
+app/common/config.toml
