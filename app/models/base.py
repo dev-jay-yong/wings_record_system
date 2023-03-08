@@ -226,6 +226,21 @@ class PlayerRecordModel(BaseModel):
     team_id = IntegerField()
     set_id = IntegerField()
 
+class SetRecordModel(BaseModel):
+
+    class Meta:
+        db_table = 'set_record'
+
+    id = IntegerField()
+    set_name = CharField(max_length=255)
+    match_id = IntegerField()
+    team_id = IntegerField()
+    match_date = DateField()
+    result = BooleanField()
+    set = IntegerField()
+    my_team_score = IntegerField()
+    other_team_score = IntegerField()
+
 
 class MatchRecordModel(BaseModel):
     class Meta:

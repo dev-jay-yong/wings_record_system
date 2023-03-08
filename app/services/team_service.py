@@ -130,6 +130,39 @@ class Team:
         if user_info:
             user_info = user_info.__dict__['__data__']
 
+        set_record_list = [
+            'attack_success',
+            'attack',
+            'serve_success',
+            'serve_count',
+            'block_success',
+            'block',
+            'receive_success',
+            'receive',
+            'dig_success',
+            'dig',
+        ]
+
+        set_record_result = {}
+        set_record_data_list = TeamHelper().get_set_record_data_by_user_id(player_id, set_record_list)
+
+        for set_record_data in set_record_data_list:
+            if set_record_result.get(set_record_data.setrecordmodel.set_name) is None:
+                set_record_result[set_record_data.setrecordmodel.set_name] = {
+                    'attack_success': 0,
+                    'attack': 0,
+                    'serve_success': 0,
+                    'serve_count': 0,
+                    'block_success': 0,
+                    'block': 0,
+                    'receive_success': 0,
+                    'receive': 0,
+                    'dig_success': 0,
+                    'dig': 0,
+                }
+
+            set_record_result[set_record_data.setrecordmodel.set_name][set_record_data.record_name] += set_record_data.count
+
         player_record = {'score_rank': TeamHelper().get_active_name_rank_by_user_id(player_id,
                                                                                     ["attack_success", "block_success",
                                                                                      "serve_success"]),
@@ -163,7 +196,7 @@ class Team:
         data = {"prize": prize, "triple_crown": triple_crown, "reference_record": reference_record}
 
         return {"user": user_info, "detail_record": detail_record, "player_record": player_record,
-                "photo_gallery_urls": photo_gallery, "job": data}
+                "photo_gallery_urls": photo_gallery, "job": data, "set_record": set_record_result}
 
     def get_record_possession(self, data, record_name, team_id):
         team_record_count = self.team_helper.get_team_record_count(team_id, record_name)
