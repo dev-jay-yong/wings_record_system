@@ -1,6 +1,6 @@
 from playhouse.shortcuts import model_to_dict
 from models.base import TeamModel, TeamPerformanceModel, TeamUserModel, UserModel, PositionModel, \
-    PlayerRecordModel, MatchRecordModel, db, TeamProfileModel, TeamHistoryModel
+    PlayerRecordModel, MatchRecordModel, db, TeamProfileModel, TeamHistoryModel, SetRecordModel
 from peewee import fn, Select
 
 import functools
@@ -17,6 +17,7 @@ class TeamHelper:
         self.match_record_table = MatchRecordModel
         self.team_profile_table = TeamProfileModel
         self.team_history_table = TeamHistoryModel
+        self.set_record_table = SetRecordModel
 
     def __exit__(self, exc_type, exc_value, traceback):
 
@@ -28,6 +29,7 @@ class TeamHelper:
         def wrap(self, *args, **kwargs):
             with db.connection_context():
                 return func(self, *args, **kwargs)
+
         return wrap
 
     @wrapper
@@ -58,7 +60,8 @@ class TeamHelper:
             fn.SUM(self.team_performance_table.win_counts).alias('total_win_count'),
             fn.SUM(self.team_performance_table.lose_counts).alias('total_lose_count')
         )
-        result = self.team_performance_table.select(*select_query).where(self.team_performance_table.team_id == team_id).execute()
+        result = self.team_performance_table.select(*select_query).where(
+            self.team_performance_table.team_id == team_id).execute()
 
         return result
 
@@ -91,7 +94,9 @@ class TeamHelper:
         if role:
             condition &= (self.user_table.role == role)
 
-        return self.user_table.select(*select_query).join(self.position_table).join(self.team_user_table,on=join_on_query).where((condition)).limit(1).first()
+        return self.user_table.select(*select_query).join(self.position_table).join(self.team_user_table,
+                                                                                    on=join_on_query).where(
+            (condition)).limit(1).first()
 
     @wrapper
     def get_team_players_by_team_id(self, team_id):
@@ -162,7 +167,7 @@ class TeamHelper:
     def get_team_record_count(self, team_id, record_name):
         select_query = fn.COUNT(self.player_record_table.team_id).alias('count')
         condition = (self.player_record_table.team_id == team_id) & (
-                    self.player_record_table.record_name == record_name)
+                self.player_record_table.record_name == record_name)
 
         return self.player_record_table.select(select_query).where(condition).get().count
 
@@ -201,6 +206,26 @@ class TeamHelper:
             where(conditions).limit(1)
 
         result = result.get() if result else None
+
+        return result
+
+    @wrapper
+    def get_set_record_data_by_user_id(self, user_id, record_name_list=None):
+
+        select_query = (
+            self.player_record_table.record_name,
+            fn.COUNT(self.player_record_table.record_name).alias('count'),
+            self.set_record_table.set_name.alias('set_name'),
+        )
+        join_on_query = (self.set_record_table.id == self.player_record_table.set_id)
+        condition = self.player_record_table.user_id == user_id
+
+        if record_name_list is not None:
+            condition &= self.player_record_table.record_name.in_(record_name_list)
+
+        group_by_query = (self.player_record_table.set_id, self.player_record_table.record_name)
+
+        result = self.player_record_table.select(*select_query).join(self.set_record_table, on=join_on_query).where(condition).group_by(*group_by_query)
 
         return result
 
