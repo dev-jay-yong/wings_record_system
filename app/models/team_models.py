@@ -225,7 +225,7 @@ class TeamHelper:
 
         group_by_query = (self.player_record_table.set_id, self.player_record_table.record_name)
 
-        result = self.player_record_table.select(*select_query).join(self.set_record_table, on=join_on_query).where(condition).group_by(*group_by_query)
+        result = self.player_record_table.select(*select_query).join(self.set_record_table, on=join_on_query).where(condition).group_by(*group_by_query).order_by(self.player_record_table.set_id)
 
         return result
 
