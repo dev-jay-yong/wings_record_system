@@ -2,7 +2,7 @@ from peewee import MySQLDatabase, Model, IntegerField, DateField, CharField, Boo
     DateTimeField, FloatField, TextField
 import tomllib
 
-with open("app/common/setting.toml", "rb") as f:
+with open("app/common/config.toml", "rb") as f:
     setting_dict = tomllib.load(f)['DATABASE_SETTING']
 
 db_name = setting_dict['dbname']

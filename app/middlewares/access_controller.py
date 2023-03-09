@@ -19,7 +19,7 @@ from errors.exceptions import APIException
 from utils.logger import api_logger
 from utils.util import query_to_dict, DateTimeHandler
 
-with open("app/common/setting.toml", "rb") as f:
+with open("app/common/config.toml", "rb") as f:
     setting_dict = tomllib.load(f)
 
 path_setting = setting_dict['PATH_SETTING']

@@ -50,7 +50,7 @@ class User:
         register_data.password = bcrypt.hashpw(password=register_data.password.encode('utf-8'), salt=bcrypt.gensalt())
         register_data = register_data.__dict__
 
-        with open("app/common/setting.toml", "rb") as f:
+        with open("app/common/config.toml", "rb") as f:
             security_setting = tomllib.load(f)['SECURITY_SETTING']
 
         register_data['token'] = jwt.encode({'user_id': register_data['identifier']},
