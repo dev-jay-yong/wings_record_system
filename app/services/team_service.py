@@ -38,6 +38,18 @@ class Team:
                 "receive": 0,
                 "receive_success": 0,
                 "receive_miss": 0
+            },
+            "setup": {
+                "left_setup_success": 0,
+                "left_setup_fail": 0,
+                "right_setup_success": 0,
+                "right_setup_fail": 0,
+                "center_setup_success": 0,
+                "center_setup_fail": 0,
+                "a_quick_setup_success": 0,
+                "a_quick_setup_fail": 0,
+                "setup_success": 0,
+                "setup_fail": 0
             }
         }
 
