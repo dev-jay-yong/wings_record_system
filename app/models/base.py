@@ -362,8 +362,122 @@ create table reference_records
 );
 """
 
-
-
 if __name__ == "__main__":
-    print(UserModel.select().execute())
-    print(MatchRecordModel.select().execute())
+    data = [
+    ]
+
+    record_data = {
+        "s": "serve_count",
+        "sm": "serve_miss",
+        "ss": "serve_success",
+
+        "b": "block",
+        "bs": "block_success",
+        "bf": "block_fail",
+
+        "as": "attack_success",
+        "a": "attack",
+        "af": "blocking_shut_out",
+        "am": "attack_miss",
+
+        "d": "dig",
+        "ds": "dig_success",
+        "df": "dig_fail",
+        "dm": "dig_fail",
+
+        "rs": "receive_success",
+        "r": "receive",
+        "rf": "receive_miss",
+
+        "lss": "left_setup_success",
+        "lsf": "left_setup_fail",
+        "rss": "right_setup_success",
+        "rsf": "right_setup_fail",
+        "css": "center_setup_success",
+        "csf": "center_setup_fail",
+        "ass": "a_quick_setup_success",
+        "asf": "a_quick_setup_fail",
+        "tss": "setup_success",
+        "tsf": "setup_fail",
+
+
+        "miss": "miss"
+    }
+
+    record_type_info = {
+        "s": "serve",
+        "sm": "serve",
+        "ss": "serve",
+
+        "b": "block",
+        "bs": "block",
+        "bf": "block",
+
+        "as": "attack",
+        "a": "attack",
+        "af": "attack",
+        "am": "attack",
+
+        "lss": "setup",
+        "lsf": "setup",
+        "rss": "setup",
+        "rsf": "setup",
+        "css": "setup",
+        "csf": "setup",
+        "ass": "setup",
+        "asf": "setup",
+        "tss": "setup",
+        "tsf": "setup",
+
+        "d": "dig",
+        "ds": "dig",
+        "df": "dig",
+        "dm": "dig",
+
+        "rs": "serve_receive",
+        "r": "serve_receive",
+        "rf": "serve_receive",
+        "miss": "miss"
+    }
+
+    record_count_info = ["sm", "ss", "bs", "bf", "as", "af", "am", "ds", "df", "rs", "rf", "dm"]
+    record_count_key = {
+        "serve": "serve_count",
+        "block": "block",
+        "attack": "attack",
+        "dig": "dig",
+        "serve_receive": "receive"
+    }
+
+    team_id = 2
+    set_id = 7
+    insert_data_list = []
+    from tqdm import tqdm
+
+    for temp in tqdm(data):
+        number, code = temp.split(' ')
+        code = code.lower()
+        print(record_data[code], record_type_info[code])
+
+        created_data = {
+            "record_name": record_data[code],
+            "record_type": record_type_info[code],
+            "user_id": number,
+            "team_id": team_id,
+            "set_id": set_id,
+        }
+        PlayerRecordModel.create(**created_data)
+
+        if code in record_count_info:
+            created_data = {
+                "record_name": record_count_key[record_type_info[code]],
+                "record_type": record_type_info[code],
+                "user_id": number,
+                "team_id": team_id,
+                "set_id": set_id,
+            }
+            PlayerRecordModel.create(**created_data)
+    #
+
+    # print(UserModel.select().execute())
+    # print(MatchRecordModel.select().execute())
