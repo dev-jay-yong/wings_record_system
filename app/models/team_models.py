@@ -230,13 +230,15 @@ class TeamHelper:
         return result
 
     @wrapper
-    def get_active_name_rank_by_user_id(self, user_id, active_name="attack_success"):
+    def get_active_name_rank_by_user_id(self, user_id, team_id, active_name="attack_success"):
         rank = fn.rank().over(order_by=[fn.COUNT(self.player_record_table.id).desc()])
 
         if type(active_name) == str:
             condition = self.player_record_table.record_name == active_name
         else:
             condition = self.player_record_table.record_name.in_(active_name)
+
+        condition &= self.player_record_table.team_id == team_id
 
         subq = (self.player_record_table
                 .select(self.player_record_table.user_id,
@@ -252,4 +254,6 @@ class TeamHelper:
 
 
 if __name__ == '__main__':
-    print(TeamHelper().get_team_win_lose_score(1))
+    data = (TeamHelper().get_set_record_data_by_user_id(19, ['attack_success']))
+
+    print(data)

@@ -198,13 +198,17 @@ class Team:
         }
             for key, value in set_record_dict.items()]
 
-        player_record = {'score_rank': TeamHelper().get_active_name_rank_by_user_id(player_id,
+        player_record = {'score_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, team_id,
                                                                                     ["attack_success", "block_success",
                                                                                      "serve_success"]),
-                         'attack_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, "attack_success"),
-                         'serve_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, "serve_success"),
-                         'block_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, "block_success"),
-                         'receive_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, "receive_success")}
+                         'attack_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, team_id,
+                                                                                     "attack_success"),
+                         'serve_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, team_id,
+                                                                                    "serve_success"),
+                         'block_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, team_id,
+                                                                                    "block_success"),
+                         'receive_rank': TeamHelper().get_active_name_rank_by_user_id(player_id, team_id,
+                                                                                      "receive_success")}
 
         for record_type, record_data in detail_record.items():
             for x in self.team_helper.get_player_record(player_id, team_id, record_type):
