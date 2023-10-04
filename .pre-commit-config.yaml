@@ -1,0 +1,5 @@
+repos:
+  - repo: https://github.com/dev-jay-yong/wings_record_system
+    rev: stable
+    hooks:
+      - id: black
