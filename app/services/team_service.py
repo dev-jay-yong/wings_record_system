@@ -48,6 +48,8 @@ class Team:
                 "center_setup_fail": 0,
                 "a_quick_setup_success": 0,
                 "a_quick_setup_fail": 0,
+                "back_attack_setup_success": 0,
+                "back_attack_setup_fail": 0,
                 "setup_success": 0,
                 "setup_fail": 0
             }
