@@ -8,7 +8,7 @@ class TeamResponse(BaseResponse):
             "name": "team_name",
             "team_logo": "logo url",
             "gender": True,
-            "created_at": "2023-01-23"
+            "created_at": "2023-01-23",
         }
     ]
 
@@ -29,7 +29,7 @@ class TeamIntroductionResponse(BaseResponse):
                 "lose_counts": 2,
                 "start_date": "2022-12-03",
                 "end_date": "2022-12-04",
-                "team_id": 1
+                "team_id": 1,
             }
         ],
         "coach": {
@@ -37,8 +37,8 @@ class TeamIntroductionResponse(BaseResponse):
             "birth": "1998-02-05",
             "role": "coach",
             "position_name": "아웃사이드 히터",
-            "position_code": "OH"
-        }
+            "position_code": "OH",
+        },
     }
 
 
@@ -49,21 +49,21 @@ class TeamPlayersResponse(BaseResponse):
             "name": "홍길동",
             "profile_image": "프로필 이미지 url",
             "position_name": "아웃사이드 히터",
-            "position_code": "OH"
+            "position_code": "OH",
         },
         {
             "id": 2,
             "name": "사또",
             "profile_image": "프로필 이미지 url",
             "position_name": "아포짓 스파이커",
-            "position_code": "OP"
+            "position_code": "OP",
         },
         {
             "id": 3,
             "name": "뭐하지",
             "profile_image": "프로필 이미지 url",
             "position_name": "미들블로커",
-            "position_code": "MB"
+            "position_code": "MB",
         },
     ]
 
@@ -71,11 +71,11 @@ class TeamPlayersResponse(BaseResponse):
 class TeamRecordResponse(BaseResponse):
     data: dict = {
         "data": {
-        "match_count": 1,
-        "set_count": 1,
-        "attack": 2,
-        "attack_success": 1,
-        "attack_miss": 1,
-        "blocking_shut_out": 0
+            "match_count": 1,
+            "set_count": 1,
+            "attack": 2,
+            "attack_success": 1,
+            "attack_miss": 1,
+            "blocking_shut_out": 0,
         }
     }

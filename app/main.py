@@ -8,7 +8,9 @@ from routers import api_router
 
 def create_app() -> FastAPI:
     fastapi_app = FastAPI()
-    fastapi_app.add_middleware(middleware_class=BaseHTTPMiddleware, dispatch=access_control)
+    fastapi_app.add_middleware(
+        middleware_class=BaseHTTPMiddleware, dispatch=access_control
+    )
     fastapi_app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -26,4 +28,5 @@ app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", port=8000, host="0.0.0.0")

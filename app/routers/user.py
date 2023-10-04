@@ -29,6 +29,7 @@ def get_oauth_client(provider: str = Query("kakao", regex="naver|kakao")):
     if provider == "kakao":
         return kakao_client
 
+
 def get_authorization_token(authorization: str = Header(...)) -> str:
     scheme, _, param = authorization.partition(" ")
     if not authorization or scheme.lower() != "bearer":
@@ -87,9 +88,12 @@ async def login_user(login_request_model: LoginRequestModel) -> dict:
     return : 이미 존재하는 아이디면 True 회원 가입이 가능한 아이디면 False 반환
     """
 
-    result = user_class.login_user(login_request_model.user_id, login_request_model.password)
+    result = user_class.login_user(
+        login_request_model.user_id, login_request_model.password
+    )
 
     return {"data": {"result": result}}
+
 
 @router.get("/kakao-login")
 async def kakao_login(oauth_client=Depends(get_oauth_client)):
@@ -126,4 +130,3 @@ async def get_user(
 ):
     user_info = await oauth_client.get_user_info(access_token=access_token)
     return {"user": user_info}
-

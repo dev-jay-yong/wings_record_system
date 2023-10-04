@@ -21,14 +21,20 @@ class User:
     def login_user(self, user_id, password):
         user = self.user_helper.get_one_user_by_id(user_id, is_dict=True)
 
-        print(user['password'], password.encode('utf-8'))
-        if user is None or bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')) is False:
+        print(user["password"], password.encode("utf-8"))
+        if (
+            user is None
+            or bcrypt.checkpw(
+                password.encode("utf-8"), user["password"].encode("utf-8")
+            )
+            is False
+        ):
             raise ex.WrongPasswordException()
 
-        if not user['confirm']:
+        if not user["confirm"]:
             raise ex.NotConfirmedUserException()
 
-        user.pop('password')
+        user.pop("password")
 
         return user
 
@@ -47,18 +53,56 @@ class User:
         if position_info is None:
             raise ex.InvalidPositionException(register_data.position)
 
-        register_data.password = bcrypt.hashpw(password=register_data.password.encode('utf-8'), salt=bcrypt.gensalt())
+        register_data.password = bcrypt.hashpw(
+            password=register_data.password.encode("utf-8"), salt=bcrypt.gensalt()
+        )
         register_data = register_data.__dict__
 
         with open("app/common/config.toml", "rb") as f:
-            security_setting = tomllib.load(f)['SECURITY_SETTING']
+            security_setting = tomllib.load(f)["SECURITY_SETTING"]
 
-        register_data['token'] = jwt.encode({'user_id': register_data['identifier']},
-                                            security_setting['JWT_SECRET'],
-                                            security_setting['JWT_ALGORITHM'])
-        register_data['position'] = position_info.id
+        register_data["token"] = jwt.encode(
+            {"user_id": register_data["identifier"]},
+            security_setting["JWT_SECRET"],
+            security_setting["JWT_ALGORITHM"],
+        )
+        register_data["position"] = position_info.id
 
         user_data = self.user_helper.create_user(register_data)
-        user_data.pop('password')
+        user_data.pop("password")
 
         return user_data
+
+
+if __name__ == "__main__":
+    names = [
+        "강도희",
+        "박현지",
+        "김다영",
+        "홍정빈",
+        "이민진",
+        "주소윤",
+        "유은미",
+        "오민산",
+        "권혜원",
+        "백미진",
+        "이우희",
+        "유정화",
+        "쥬디",
+        "이정후",
+        "김수현",
+        "하라후키",
+        "레지나",
+    ]
+
+    with open("app/common/setting.toml", "rb") as f:
+        security_setting = tomllib.load(f)["SECURITY_SETTING"]
+    for name in names:
+        token = jwt.encode(
+            {"user_id": name},
+            security_setting["JWT_SECRET"],
+            security_setting["JWT_ALGORITHM"],
+        )
+        print(f"{name} - {token}")
+
+    print(bcrypt.hashpw(password="020322".encode("utf-8"), salt=bcrypt.gensalt()))

@@ -15,12 +15,10 @@ class RegisterResponse(BaseResponse):
             "age": 0,
             "number": -1,
             "position": "position",
-            "token": "Token"
+            "token": "Token",
         }
     }
 
 
 class DuplicateUserIdResponse(BaseResponse):
-    data: dict = {
-        "result": True
-    }
+    data: dict = {"result": True}

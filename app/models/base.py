@@ -1,17 +1,28 @@
-from peewee import MySQLDatabase, Model, IntegerField, DateField, CharField, BooleanField, ForeignKeyField, \
-    DateTimeField, FloatField, TextField
+from peewee import (
+    MySQLDatabase,
+    Model,
+    IntegerField,
+    DateField,
+    CharField,
+    BooleanField,
+    ForeignKeyField,
+    DateTimeField,
+    FloatField,
+    TextField,
+)
 import tomllib
 
 with open("app/common/config.toml", "rb") as f:
-    setting_dict = tomllib.load(f)['DATABASE_SETTING']
+    setting_dict = tomllib.load(f)["DATABASE_SETTING"]
 
-db_name = setting_dict['dbname']
-user = setting_dict['user']
-password = setting_dict['password']
-port = setting_dict['port']
-host = setting_dict['host']
+db_name = setting_dict["dbname"]
+user = setting_dict["user"]
+password = setting_dict["password"]
+port = setting_dict["port"]
+host = setting_dict["host"]
 
 db = MySQLDatabase(db_name, user=user, password=password, host=host, port=port)
+
 
 class BaseModel(Model):
     class Meta:
@@ -20,7 +31,7 @@ class BaseModel(Model):
 
 class TeamModel(BaseModel):
     class Meta:
-        db_table = 'teams'
+        db_table = "teams"
 
     id = IntegerField(primary_key=True, db_column="id")
     name = CharField(max_length=50)
@@ -44,7 +55,7 @@ create table teams
 
 class TeamPerformanceModel(BaseModel):
     class Meta:
-        db_table = 'team_performances'
+        db_table = "team_performances"
 
     id = IntegerField(primary_key=True, db_column="id")
     competition_name = CharField(max_length=50)
@@ -58,7 +69,7 @@ class TeamPerformanceModel(BaseModel):
 
 class TeamProfileModel(BaseModel):
     class Meta:
-        db_table = 'team_profile'
+        db_table = "team_profile"
 
     id = IntegerField(primary_key=True, db_column="id")
     team_id = IntegerField()
@@ -96,7 +107,7 @@ create table team_performances
 
 class TeamUserModel(BaseModel):
     class Meta:
-        db_table = 'team_users'
+        db_table = "team_users"
 
     id = IntegerField(primary_key=True, db_column="id")
     team_id = IntegerField()
@@ -116,7 +127,7 @@ create table team_users
 
 class PositionModel(BaseModel):
     class Meta:
-        db_table = 'positions'
+        db_table = "positions"
 
     id = IntegerField(primary_key=True, db_column="id")
     position_name = CharField(max_length=50, null=False)
@@ -136,7 +147,7 @@ create table position
 
 class UserModel(BaseModel):
     class Meta:
-        db_table = 'users'
+        db_table = "users"
 
     id = IntegerField(primary_key=True, db_column="id")
     identifier = CharField(max_length=50)
@@ -178,9 +189,8 @@ create table users
 
 
 class PlayerRecordModel(BaseModel):
-
     class Meta:
-        db_table = 'player_record'
+        db_table = "player_record"
 
     id = IntegerField()
     record_name = CharField(max_length=50)
@@ -214,9 +224,8 @@ create index player_record_user_id_team_id_index
 
 
 class PlayerRecordModel(BaseModel):
-
     class Meta:
-        db_table = 'player_record'
+        db_table = "player_record"
 
     id = IntegerField()
     record_name = CharField(max_length=50)
@@ -226,10 +235,10 @@ class PlayerRecordModel(BaseModel):
     team_id = IntegerField()
     set_id = IntegerField()
 
-class SetRecordModel(BaseModel):
 
+class SetRecordModel(BaseModel):
     class Meta:
-        db_table = 'set_record'
+        db_table = "set_record"
 
     id = IntegerField()
     set_name = CharField(max_length=255)
@@ -244,7 +253,7 @@ class SetRecordModel(BaseModel):
 
 class MatchRecordModel(BaseModel):
     class Meta:
-        db_table = 'match_record'
+        db_table = "match_record"
 
     id = IntegerField(primary_key=True, db_column="id")
     match_date = DateTimeField()
@@ -277,11 +286,13 @@ create table match_record
 
 class PhotoModel(BaseModel):
     class Meta:
-        db_table = 'photos'
+        db_table = "photos"
 
     id = IntegerField(primary_key=True, db_column="id")
     user_id = IntegerField()
     image_url = CharField(max_length=255)
+
+
 """
 create table photos
 (
@@ -295,7 +306,7 @@ create table photos
 
 class PrizeModel(BaseModel):
     class Meta:
-        db_table = 'prizes'
+        db_table = "prizes"
 
     id = IntegerField(primary_key=True, db_column="id")
     prize_name = CharField(max_length=50)
@@ -319,7 +330,7 @@ create table prizes
 
 class TripleCrownModel(BaseModel):
     class Meta:
-        db_table = 'triple_crowns'
+        db_table = "triple_crowns"
 
     id = IntegerField(primary_key=True, db_column="id")
     user_id = IntegerField()
@@ -328,6 +339,8 @@ class TripleCrownModel(BaseModel):
     block_count = IntegerField()
     created_at = DateField()
     match_id = IntegerField()
+
+
 """
 create table triple_crowns
 (
@@ -345,12 +358,14 @@ create table triple_crowns
 
 class ReferenceRecordModel(BaseModel):
     class Meta:
-        db_table = 'reference_records'
+        db_table = "reference_records"
 
     id = IntegerField(primary_key=True, db_column="id")
     user_id = IntegerField()
     record_name = CharField(50)
     created_at = DateField()
+
+
 """
 create table reference_records
 (
@@ -364,31 +379,157 @@ create table reference_records
 
 if __name__ == "__main__":
     data = [
+        "19 RS",
+        "16 LSS",
+        "19 AS",
+        "16 S",
+        "11 BS",
+        "16 S",
+        "10 DS",
+        "16 LSF",
+        "99 RS",
+        "16 RSS",
+        "19 A",
+        "10 D",
+        "16 LSS",
+        "19 AM",
+        "99 R",
+        "16 CSF",
+        "17 A",
+        "10 DS",
+        "16 RSS",
+        "11 A",
+        "17 BF",
+        "10 R",
+        "99 TSS",
+        "11 AF",
+        "17 DS",
+        "10 RSS",
+        "19 AM",
+        "19 SS",
+        "19 SS",
+        "19 S",
+        "19 S",
+        "16 LSF",
+        "19 S",
+        "19 DS",
+        "16 LSS",
+        "10 A",
+        "17 DS",
+        "16 CSS",
+        "17 AS",
+        "19 SM",
+        "99 R",
+        "16 LSF",
+        "10 AS",
+        "17 S",
+        "10 DS",
+        "16 LSF",
+        "17 S",
+        "16 D",
+        "17 SS",
+        "17 S",
+        "99 B",
+        "17 S",
+        "10 BF",
+        "17 R",
+        "10 DM",
+        "17 RM",
+        "19 R",
+        "16 LSF",
+        "10 AS",
+        "11 S",
+        "17 DF",
+        "10 SM",
+        "99 S",
+        "11 DS",
+        "16 LSS",
+        "19 A",
+        "16 LSS",
+        "19 AS",
+        "99 SM",
+        "10 R",
+        "16 LSS",
+        "19 A",
+        "16 S",
+        "99 DF",
+        "99 RM",
+        "99 RS",
+        "16 RSS",
+        "19 AS",
+        "19 SS",
+        "19 S",
+        "16 LSS",
+        "10 AF",
+        "10 RS",
+        "16 ASS",
+        "17 AF",
+        "16 DS",
+        "19 TSF",
+        "11 DS",
+        "10 CSS",
+        "17 A",
+        "10 R",
+        "16 LSF",
+        "19 DS",
+        "16 LSS",
+        "10 AF",
+        "10 RS",
+        "16 RSS",
+        "11 A",
+        "10 RS",
+        "16 LSS",
+        "10 A",
+        "99 DS",
+        "16 ASS",
+        "17 AS",
+        "17 SM",
+        "17 RS",
+        "16 LSS",
+        "10 AF",
+        "16 DS",
+        "17 TSF",
+        "11 DS",
+        "17 LSF",
+        "10 AM",
+        "19 R",
+        "16 LSF",
+        "17 RS",
+        "16 BSS",
+        "16 LSS",
+        "10 AS",
+        "10 RS",
+        "16 ASF",
+        "99 AM",
+        "19 RS",
+        "16 LSS",
+        "10 AM",
+        "19 RS",
+        "16 BSS",
+        "19 AF",
+        "11 BF",
     ]
 
     record_data = {
         "s": "serve_count",
         "sm": "serve_miss",
+        "sf": "serve_miss",
         "ss": "serve_success",
-
         "b": "block",
         "bs": "block_success",
         "bf": "block_fail",
-
         "as": "attack_success",
         "a": "attack",
         "af": "blocking_shut_out",
         "am": "attack_miss",
-
         "d": "dig",
         "ds": "dig_success",
         "df": "dig_fail",
         "dm": "dig_fail",
-
         "rs": "receive_success",
         "r": "receive",
         "rf": "receive_miss",
-
+        "rm": "receive_miss",
         "lss": "left_setup_success",
         "lsf": "left_setup_fail",
         "rss": "right_setup_success",
@@ -397,27 +538,25 @@ if __name__ == "__main__":
         "csf": "center_setup_fail",
         "ass": "a_quick_setup_success",
         "asf": "a_quick_setup_fail",
+        "bss": "back_attack_setup_success",
+        "bsf": "back_attack_setup_fail",
         "tss": "setup_success",
         "tsf": "setup_fail",
-
-
-        "miss": "miss"
+        "miss": "miss",
     }
 
     record_type_info = {
         "s": "serve",
         "sm": "serve",
+        "sf": "serve",
         "ss": "serve",
-
         "b": "block",
         "bs": "block",
         "bf": "block",
-
         "as": "attack",
         "a": "attack",
         "af": "attack",
         "am": "attack",
-
         "lss": "setup",
         "lsf": "setup",
         "rss": "setup",
@@ -428,36 +567,50 @@ if __name__ == "__main__":
         "asf": "setup",
         "tss": "setup",
         "tsf": "setup",
-
+        "bss": "setup",
+        "bsf": "setup",
         "d": "dig",
         "ds": "dig",
         "df": "dig",
         "dm": "dig",
-
         "rs": "serve_receive",
         "r": "serve_receive",
         "rf": "serve_receive",
-        "miss": "miss"
+        "rm": "serve_receive",
+        "miss": "miss",
     }
 
-    record_count_info = ["sm", "ss", "bs", "bf", "as", "af", "am", "ds", "df", "rs", "rf", "dm"]
+    record_count_info = [
+        "sm",
+        "ss",
+        "bs",
+        "bf",
+        "as",
+        "af",
+        "am",
+        "ds",
+        "df",
+        "rs",
+        "rf",
+        "dm",
+        "rm",
+    ]
     record_count_key = {
         "serve": "serve_count",
         "block": "block",
         "attack": "attack",
         "dig": "dig",
-        "serve_receive": "receive"
+        "serve_receive": "receive",
     }
 
-    team_id = 2
-    set_id = 7
+    team_id = 1
+    set_id = 23
     insert_data_list = []
     from tqdm import tqdm
 
     for temp in tqdm(data):
-        number, code = temp.split(' ')
+        number, code = temp.split(" ")
         code = code.lower()
-        print(record_data[code], record_type_info[code])
 
         created_data = {
             "record_name": record_data[code],

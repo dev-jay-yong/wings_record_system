@@ -1,7 +1,16 @@
 from playhouse.shortcuts import model_to_dict
-from models.base import db, UserModel, PhotoModel, ReferenceRecordModel, TripleCrownModel, PrizeModel, PositionModel
+from models.base import (
+    db,
+    UserModel,
+    PhotoModel,
+    ReferenceRecordModel,
+    TripleCrownModel,
+    PrizeModel,
+    PositionModel,
+)
 
 import functools
+
 
 class UserHelper:
     def __init__(self):
@@ -13,7 +22,6 @@ class UserHelper:
         self.prize_table = PrizeModel
 
     def __exit__(self, exc_type, exc_value, traceback):
-
         if not db.is_closed():
             db.close()
 
@@ -22,13 +30,16 @@ class UserHelper:
         def wrap(self, *args, **kwargs):
             with db.connection_context():
                 return func(self, *args, **kwargs)
+
         return wrap
 
     def create_user(self, data):
         return model_to_dict(self.table.create(**data))
 
     def get_position_by_name(self, position_name):
-        return self.position_table.get_or_none(self.position_table.position_name == position_name)
+        return self.position_table.get_or_none(
+            self.position_table.position_name == position_name
+        )
 
     def get_one_user_by_id(self, user_id, is_dict=False):
         result = self.table.get_or_none(self.table.identifier == user_id)
@@ -38,19 +49,33 @@ class UserHelper:
         return self.table.get_or_none(self.table.token == token)
 
     def get_photo_gallery(self, user_id):
-        return self.user_photo_table.select().where(self.user_photo_table.user_id == user_id).execute()
+        return (
+            self.user_photo_table.select()
+            .where(self.user_photo_table.user_id == user_id)
+            .execute()
+        )
 
     def get_reference_record_by_user_id(self, user_id):
-        return self.reference_record_table.select().where(self.reference_record_table.user_id == user_id).execute()
+        return (
+            self.reference_record_table.select()
+            .where(self.reference_record_table.user_id == user_id)
+            .execute()
+        )
 
     def get_triple_crown_by_user_id(self, user_id):
-        return self.triple_crown_table.select().where(self.triple_crown_table.user_id == user_id).execute()
+        return (
+            self.triple_crown_table.select()
+            .where(self.triple_crown_table.user_id == user_id)
+            .execute()
+        )
 
     def get_prize_by_user_id(self, user_id):
-        return self.prize_table.select().where(self.prize_table.user_id == user_id).execute()
+        return (
+            self.prize_table.select()
+            .where(self.prize_table.user_id == user_id)
+            .execute()
+        )
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     print([x.image_url for x in UserHelper().get_photo_gallery(7)])
-

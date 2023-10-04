@@ -35,7 +35,7 @@ async def api_logger(request: Request, response=None, error=None):
         user_log = dict(
             client=request.state.ip,
             user=user.id if user and user.id else None,
-            email=f'{user_name[0]}*{user_name[-1]}' if user_name else None,
+            email=f"{user_name[0]}*{user_name[-1]}" if user_name else None,
         )
     except:
         user_log = "test"
