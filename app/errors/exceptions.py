@@ -19,6 +19,16 @@ class TokenExpiredEx(APIException):
         )
 
 
+class InvalidTokenEx(APIException):
+    def __init__(self, ex: Exception = None):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            message=f"잘못된 토큰입니다.",
+            detail="Invalid Token",
+            ex=ex,
+        )
+
+
 class TokenDecodeEx(APIException):
     def __init__(self, ex: Exception = None):
         super().__init__(

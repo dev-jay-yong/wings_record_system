@@ -1,12 +1,43 @@
-from fastapi import APIRouter
-from fastapi.responses import FileResponse
+import secrets
+from typing import Optional
+
+import requests
+from fastapi import Response, Request, APIRouter, Depends, HTTPException, Header, Query
+from fastapi.responses import RedirectResponse
+from starlette import status
 
 from routers.response_model.user_response import *
 from routers.requests_model.user_requests import *
 from services.user_service import User
+from utils.oauth_client import OAuthClient
 
 router = APIRouter(prefix="/user", tags=["user"])
 user_class = User()
+
+
+kakao_client = OAuthClient(
+    client_id="bd9b741a1e606cc77952dee9989fedd2",
+    client_secret_id="bd9b741a1e606cc77952dee9989fedd2",
+    redirect_uri="http://127.0.0.1:8000/user/callback",
+    authentication_uri="https://kauth.kakao.com/oauth",
+    resource_uri="https://kapi.kakao.com/v2/user/me",
+    verify_uri="https://kapi.kakao.com/v1/user/access_token_info",
+)
+
+
+def get_oauth_client(provider: str = Query("kakao", regex="naver|kakao")):
+    if provider == "kakao":
+        return kakao_client
+
+def get_authorization_token(authorization: str = Header(...)) -> str:
+    scheme, _, param = authorization.partition(" ")
+    if not authorization or scheme.lower() != "bearer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return param
 
 
 @router.post(
@@ -59,3 +90,40 @@ async def login_user(login_request_model: LoginRequestModel) -> dict:
     result = user_class.login_user(login_request_model.user_id, login_request_model.password)
 
     return {"data": {"result": result}}
+
+@router.get("/kakao-login")
+async def kakao_login(oauth_client=Depends(get_oauth_client)):
+    state = secrets.token_urlsafe(32)
+    login_url = oauth_client.get_oauth_login_url(state=state)
+    return RedirectResponse(login_url)
+
+
+@router.get("/callback")
+async def callback(
+    code: str, state: Optional[str] = None, oauth_client=Depends(get_oauth_client)
+):
+    token_response = await oauth_client.get_tokens(code, state)
+
+    return {"response": token_response}
+
+
+@router.get("/refresh")
+async def refresh(
+    oauth_client=Depends(get_oauth_client),
+    refresh_token: str = Depends(get_authorization_token),
+):
+    token_response = await oauth_client.refresh_access_token(
+        refresh_token=refresh_token
+    )
+
+    return {"response": token_response}
+
+
+@router.get("/user", dependencies=[Depends(get_oauth_client)])
+async def get_user(
+    oauth_client=Depends(get_oauth_client),
+    access_token: str = Depends(get_authorization_token),
+):
+    user_info = await oauth_client.get_user_info(access_token=access_token)
+    return {"user": user_info}
+
