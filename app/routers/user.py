@@ -1,8 +1,8 @@
 import secrets
+import tomllib
 from typing import Optional
 
-import requests
-from fastapi import Response, Request, APIRouter, Depends, HTTPException, Header, Query
+from fastapi import APIRouter, Depends, HTTPException, Header, Query
 from fastapi.responses import RedirectResponse
 from starlette import status
 
@@ -14,11 +14,13 @@ from utils.oauth_client import OAuthClient
 router = APIRouter(prefix="/user", tags=["user"])
 user_class = User()
 
+with open("app/common/config.toml", "rb") as f:
+    setting_dict = tomllib.load(f)["KAKAO_OAUTH"]
 
 kakao_client = OAuthClient(
-    client_id="bd9b741a1e606cc77952dee9989fedd2",
-    client_secret_id="bd9b741a1e606cc77952dee9989fedd2",
-    redirect_uri="http://127.0.0.1:8000/user/callback",
+    client_id=setting_dict["CLIENT_ID"],
+    client_secret_id=setting_dict["CLIENT_SECRET_ID"],
+    redirect_uri=setting_dict["REDIRECT_URI"],
     authentication_uri="https://kauth.kakao.com/oauth",
     resource_uri="https://kapi.kakao.com/v2/user/me",
     verify_uri="https://kapi.kakao.com/v1/user/access_token_info",
